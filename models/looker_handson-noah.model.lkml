@@ -1,37 +1,27 @@
 connection: "looker_handson-noah"
 
-# include all the views
-include: "/views/**/*.view"
+include: "/views/*.view"
 
-datagroup: looker_handson-noah_default_datagroup {
-  # sql_trigger: SELECT MAX(id) FROM etl_log;;
-  max_cache_age: "1 hour"
+explore: channel {
+  group_label: "Looker HandsON Noah"
+  label: "채널 정보"
 }
 
-persist_with: looker_handson-noah_default_datagroup
-
-explore: stores {}
-
-explore: channels {}
-
+explore: products {
+  group_label: "Looker HandsON Noah"
+  label: "제품 정보"
+}
 explore: transaction {
-  join: stores {
-    type: left_outer
-    sql_on: ${transaction.store_id} = ${stores.id} ;;
+  group_label: "Looker HandsON"
+  label: "거래 정보"
+  join: products {
+    type: full_outer
+    sql_on: ${transaction.product_id} = ${products.id} ;;
     relationship: many_to_one
   }
-
-  join: channels {
-    type: left_outer
-    sql_on: ${transaction.channel_id} = ${channels.id} ;;
+  join: channel {
+    type: full_outer
+    sql_on: ${transaction.channel_id} = ${channel.id};;
     relationship: many_to_one
-  }
-
-  join: transaction__line_items {
-    view_label: "Transaction: Line Items"
-    sql: LEFT JOIN UNNEST(${transaction.line_items}) as transaction__line_items ;;
-    relationship: one_to_many
   }
 }
-
-explore: products {}
