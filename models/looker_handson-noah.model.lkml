@@ -12,7 +12,7 @@ explore: products {
   label: "제품 정보"
 }
 explore: transaction {
-  group_label: "Looker HandsON"
+  group_label: "Looker HandsON Noah"
   label: "거래 정보"
   join: products {
     type: full_outer

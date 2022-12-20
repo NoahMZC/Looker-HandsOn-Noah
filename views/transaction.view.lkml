@@ -1,75 +1,65 @@
 view: transaction {
-  sql_table_name: `Looker_HandsOn.transaction`
-    ;;
-  drill_fields: [transaction_id]
-
-  dimension: transaction_id {
-    primary_key: yes
-    type: number
-    sql: ${TABLE}.transaction_id ;;
+  derived_table: {
+    sql:
+      SELECT
+        transaction_timestamp
+       ,transaction_id
+       ,store_id
+       ,channel_id
+       ,product_id
+       ,sale_price
+       ,gross_margin
+      FROM
+        `mzcdsc-team-200716.Looker_HandsOn.transaction`
+       ,UNNEST(line_items);;
   }
-
-  dimension: channel_id {
-    type: number
-    # hidden: yes
-    sql: ${TABLE}.channel_id ;;
-  }
-
-  dimension: customer_id {
-    type: number
-    sql: ${TABLE}.customer_id ;;
-  }
-
-  dimension: line_items {
-    hidden: yes
-    sql: ${TABLE}.line_items ;;
-  }
-
-  dimension: store_id {
-    type: number
-    # hidden: yes
-    sql: ${TABLE}.store_id ;;
-  }
-
   dimension_group: transaction_timestamp {
+    group_label: "시점"
+    label: "거래 일시"
     type: time
     timeframes: [
-      raw,
       time,
+      raw,
       date,
       week,
       month,
       quarter,
       year
     ]
-    sql: ${TABLE}.transaction_timestamp ;;
+    convert_tz: no
+    datatype: timestamp
+    sql: ${TABLE}.transaction_timestamp  ;;
   }
-
-  measure: count {
-    type: count
-    drill_fields: [transaction_id, stores.id, stores.name, channels.id, channels.name]
-  }
-}
-
-view: transaction__line_items {
-  dimension: gross_margin {
-    type: number
-    sql: gross_margin ;;
+  dimension: transaction_id {
+    primary_key: yes
+    type: string
+    sql: ${TABLE}.transaction_id ;;
   }
 
   dimension: product_id {
-    type: number
-    sql: product_id ;;
-  }
-
-  dimension: sale_price {
-    type: number
-    sql: sale_price ;;
-  }
-
-  dimension: transaction__line_items {
-    type: string
     hidden: yes
-    sql: transaction__line_items ;;
+    type: string
+    sql: ${TABLE}.product_id ;;
+  }
+
+  dimension: channel_id {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.channel_id ;;
+  }
+  measure: sale_price {
+    label: "판매액"
+    type: sum
+    sql: ${TABLE}.sale_price ;;
+    value_format: "$0.00"
+  }
+  measure: gross_margin {
+    label: "매출 총 이익"
+    type: sum
+    sql: ${TABLE}.gross_margin ;;
+    value_format: "$0.00"
+  }
+  measure: count {
+    type: count
   }
 }

@@ -1,56 +1,33 @@
 view: products {
-  sql_table_name: `Looker_HandsOn.products`
-    ;;
-  drill_fields: [id]
+  sql_table_name: `mzcdsc-team-200716.Looker_HandsOn.products` ;;
 
   dimension: id {
     primary_key: yes
-    type: number
-    sql: ${TABLE}.ID ;;
-  }
-
-  dimension: brand {
     type: string
-    sql: ${TABLE}.BRAND ;;
+    sql: ${TABLE}.id ;;
   }
 
   dimension: category {
+    group_label: "제품 정보"
+    label: "카테고리"
     type: string
     sql: ${TABLE}.CATEGORY ;;
   }
 
-  dimension: cost {
-    type: number
-    sql: ${TABLE}.COST ;;
-  }
-
-  dimension: department {
-    type: string
-    sql: ${TABLE}.DEPARTMENT ;;
-  }
-
-  dimension: distribution_center_id {
-    type: number
-    sql: ${TABLE}.DISTRIBUTION_CENTER_ID ;;
-  }
-
   dimension: name {
+    group_label: "제품 정보"
+    label: "제품명"
     type: string
     sql: ${TABLE}.NAME ;;
   }
 
-  dimension: retail_price {
-    type: number
-    sql: ${TABLE}.RETAIL_PRICE ;;
-  }
-
-  dimension: sku {
+  dimension: brand {
+    group_label: "제품 정보"
+    label: "브랜드"
     type: string
-    sql: ${TABLE}.SKU ;;
+    sql: ${TABLE}.BRAND ;;
   }
-
   measure: count {
     type: count
-    drill_fields: [id, name]
   }
 }
